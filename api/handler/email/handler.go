@@ -1,7 +1,7 @@
 package handler
 
 import (
-	usecase "challengeTruora/usecase/email"
+	usecase "challenge/usecase/email"
 	"encoding/json"
 	"fmt"
 	"net/http"

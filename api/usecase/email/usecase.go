@@ -1,6 +1,6 @@
 package usecase
 
-import repository "challengeTruora/repository/email"
+import repository "challenge/repository/email"
 
 type UseCase interface {
 	GetEmail() (map[string]interface{}, error)

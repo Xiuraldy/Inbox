@@ -1,7 +1,7 @@
 package main
 
 import (
-	"challengeTruora/shared"
+	"challenge/shared"
 	"log"
 	"net/http"
 	_ "net/http/pprof"

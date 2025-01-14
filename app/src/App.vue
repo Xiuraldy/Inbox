@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import LogoSvg from './components/LogoSvg.vue'
+import Linkedin from './components/Linkedin.vue';
 </script>
 
 <template>
@@ -14,8 +14,8 @@ import LogoSvg from './components/LogoSvg.vue'
   </nav>
   <RouterView />
   <footer class="h-[6vh] flex justify-center items-center bg-tertiary">
-    <h3 class="mr-2">Challenge By.</h3>
-    <LogoSvg/>
+    <h3 class="mr-2">Code developed by </h3>
+    <Linkedin/>
   </footer>
 </template>
 

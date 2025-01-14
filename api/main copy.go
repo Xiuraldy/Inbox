@@ -41,7 +41,7 @@
 // 		log.Println(http.ListenAndServe("localhost:6060", nil))
 // 	}()
 
-// 	root := "//?/C:/Users/Xiuraldy/Documents/Programación/ChallengeTruora/api/data/enron_mail_20110402/maildir"
+// 	root := "//?/C:/Users/Xiuraldy/Documents/Programación/challenge/api/data/enron_mail_20110402/maildir"
 
 // 	err := filepath.Walk(root, func(path string, info os.FileInfo, err error) error {
 // 		if err != nil {

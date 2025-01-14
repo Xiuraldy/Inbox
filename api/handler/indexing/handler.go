@@ -1,7 +1,7 @@
 package handler
 
 import (
-	usecase "challengeTruora/usecase/indexing"
+	usecase "challenge/usecase/indexing"
 	"encoding/json"
 	"net/http"
 )

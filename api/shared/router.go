@@ -1,11 +1,11 @@
 package shared
 
 import (
-	handler "challengeTruora/handler/email"
-	handlerIndexing "challengeTruora/handler/indexing"
-	repository "challengeTruora/repository/email"
-	usecase "challengeTruora/usecase/email"
-	usecaseIndexing "challengeTruora/usecase/indexing"
+	handler "challenge/handler/email"
+	handlerIndexing "challenge/handler/indexing"
+	repository "challenge/repository/email"
+	usecase "challenge/usecase/email"
+	usecaseIndexing "challenge/usecase/indexing"
 
 	"github.com/go-chi/chi"
 )
