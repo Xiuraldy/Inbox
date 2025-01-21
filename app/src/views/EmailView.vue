@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
-import { useEmail } from '@/services/email'
+import { loadEmail } from '@/services/email'
 import type { Inbox } from '@/types';
-import { useTotal } from '@/services/total';
+import { loadTotal } from '@/services/total';
+import Spinner from '../components/Spinner.vue';
 
-const { loadEmail, inbox } = useEmail()
-const { loadTotal, total } = useTotal()
+const inbox = ref<Inbox[]>([])
+const total = ref(0)
+const loading = ref(false)
 
 let pag = '0';
-const timer = ref<number | undefined>(undefined)
 const search = ref<string>('');
 
 function changePages(direction: string) {
@@ -28,8 +29,7 @@ function changePages(direction: string) {
 
   
   pag = pagInt.toString()
-  loadEmail({ from: pag, search: search.value })
-  loadTotal({ from: pag, search: search.value })
+  loadData()
 }
 
 const selectedEmail = ref<Inbox | null>(null);
@@ -46,27 +46,38 @@ function closeModal() {
 
 onMounted(loadData);
 
-async function loadData() {
-  clearTimeout(timer.value)
-  timer.value = setTimeout(async () => {
-    console.log("pag",pag)
-     loadEmail({ from: pag, search: search.value })
-     loadTotal({ from: pag, search: search.value }) 
-  }, timer.value ? 1000 : 0)
+async function loadData(p?: string) {
+    loading.value = true
+    const [inboxData, totalData] = await Promise.all([loadEmail({ from: p || pag, search: search.value }), loadTotal({ from: p || pag, search: search.value })])
+    if(p) {
+      pag = p
+    }
+    inbox.value = inboxData
+    if(totalData !== -1) {
+      total.value = totalData
+    } 
+    loading.value = false
 }
 
 </script>
 
 <template>
   <section>
-    <div class="flex flex-col items-center mb-4">
+    <div class="flex items-center justify-center gap-2 mb-4">
       <input 
         type="text" 
         placeholder="Search Email..." 
-        class="w-2/3 max-w-md rounded-md p-2 -mb-2 text-sm border border-gray-300 outline-none"
+        class="w-2/3 max-w-md rounded-md p-2 text-sm border border-gray-300 outline-none"
         v-model="search" 
-        @input="loadData"
+        :disabled='loading'
       >
+      <button 
+        class="relative bg-primary text-white text-sm w-32 h-10 rounded transition-all duration-300 hover:bg-secondary flex items-center justify-center"
+        @click="() => { loadData('0') }"
+      >
+        <Spinner :loading="loading" />
+        {{ loading ? "" : "Search 🔍︎" }}
+      </button>
     </div>
     <div class="overflow-x-auto ml-5">
       <table class="border-collapse text-base w-max">
@@ -98,16 +109,27 @@ async function loadData() {
     <div class="flex flex-col items-center">
       <div class="flex justify-center">
         <button 
-          class="bg-primary text-white text-3xl w-36 h-10 rounded transition-all duration-300 hover:bg-secondary hover:w-48"
+          class="relative bg-primary text-white text-3xl w-36 h-10 rounded transition-all duration-300 hover:bg-secondary hover:w-48"
+          :disabled='loading'
           @click="changePages('back')"
-        >⬅</button>
+          v-if="parseInt(pag) > 0 && inbox.length !== 0" 
+        >
+          <Spinner :loading="loading"/>
+          {{loading ? "" : "⬅" }}
+        </button>
         <button 
-          class="bg-primary text-white text-3xl w-36 h-10 rounded transition-all duration-300 hover:bg-secondary hover:w-48"
+          class="relative bg-primary text-white text-3xl w-36 h-10 rounded transition-all duration-300 hover:bg-secondary hover:w-48"
+          :disabled="loading"
           @click="changePages('next')"
-        >⮕</button>
+          v-if="parseInt(pag) + 5 < total && inbox.length !== 0" 
+        >
+          <Spinner :loading="loading"/>
+          {{loading ? "" : "⮕"}}
+        </button>
+
       </div>
-      <p v-if="total">Page {{ Math.ceil((parseInt(pag) + 5) / 5) }} of {{ Math.ceil(total/5) }}</p>
-      <p v-else>Records Not Found :c</p>
+      <p v-if="inbox.length !== 0">Page {{ Math.ceil((parseInt(pag) + 5) / 5) }} of {{ Math.ceil(total/5) }}</p>
+      <p v-else><b>No emails found matching your search ✘</b></p>
     </div>
   </section>
 
