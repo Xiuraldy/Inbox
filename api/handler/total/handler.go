@@ -5,20 +5,20 @@ import (
 	"net/http"
 	"strconv"
 
-	usecase "challenge/usecase/email"
+	usecase "challenge/usecase/total"
 )
 
-type EmailHandler struct {
+type TotalHandler struct {
 	usecase usecase.UseCase
 }
 
-func NewEmail(usecase usecase.UseCase) *EmailHandler {
-	return &EmailHandler{
+func NewTotal(usecase usecase.UseCase) *TotalHandler {
+	return &TotalHandler{
 		usecase: usecase,
 	}
 }
 
-func (e *EmailHandler) GetEmail(w http.ResponseWriter, r *http.Request) {
+func (e *TotalHandler) GetTotal(w http.ResponseWriter, r *http.Request) {
 	fromStr := r.URL.Query().Get("from")
 	from, err := strconv.Atoi(fromStr)
 	if err != nil || from < 0 {
@@ -28,12 +28,12 @@ func (e *EmailHandler) GetEmail(w http.ResponseWriter, r *http.Request) {
 
 	search := r.URL.Query().Get("search")
 
-	emailResponse, err := e.usecase.GetEmail(from, search)
+	totalResponse, err := e.usecase.GetTotal(from, search)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(emailResponse)
+	json.NewEncoder(w).Encode(totalResponse)
 }

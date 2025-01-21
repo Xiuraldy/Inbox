@@ -2,10 +2,13 @@
 import { onMounted, ref } from 'vue'
 import { useEmail } from '@/services/email'
 import type { Inbox } from '@/types';
+import { useTotal } from '@/services/total';
 
-const { loadEmail, inbox, totalRecords } = useEmail()
+const { loadEmail, inbox } = useEmail()
+const { loadTotal, total } = useTotal()
 
-let pag = '5';
+let pag = '0';
+const timer = ref<number | undefined>(undefined)
 const search = ref<string>('');
 
 function changePages(direction: string) {
@@ -13,18 +16,20 @@ function changePages(direction: string) {
 
   if(direction == "back") {
     pagInt = pagInt - 5
-    if (pagInt < 5) {
-      pagInt = 5
+    if (pagInt < 0) {
+      pagInt = 0
     }
   } else {
     pagInt = pagInt + 5
-    if (pagInt > totalRecords.value) {
-      pagInt = totalRecords.value
+    if (pagInt > total.value) {
+      pagInt = total.value/5
     }
   }
 
+  
   pag = pagInt.toString()
-  loadEmail({ paginator: pag, search: search.value })
+  loadEmail({ from: pag, search: search.value })
+  loadTotal({ from: pag, search: search.value })
 }
 
 const selectedEmail = ref<Inbox | null>(null);
@@ -39,11 +44,19 @@ function closeModal() {
   isModalOpen.value = false; 
 }
 
-onMounted(async () => {
-  await loadEmail({ paginator: pag })
-});
+onMounted(loadData);
+
+async function loadData() {
+  clearTimeout(timer.value)
+  timer.value = setTimeout(async () => {
+    console.log("pag",pag)
+     loadEmail({ from: pag, search: search.value })
+     loadTotal({ from: pag, search: search.value }) 
+  }, timer.value ? 1000 : 0)
+}
 
 </script>
+
 <template>
   <section>
     <div class="flex flex-col items-center mb-4">
@@ -52,7 +65,7 @@ onMounted(async () => {
         placeholder="Search Email..." 
         class="w-2/3 max-w-md rounded-md p-2 -mb-2 text-sm border border-gray-300 outline-none"
         v-model="search" 
-        @input="loadEmail({ paginator: pag, search: search})"
+        @input="loadData"
       >
     </div>
     <div class="overflow-x-auto ml-5">
@@ -93,7 +106,7 @@ onMounted(async () => {
           @click="changePages('next')"
         >⮕</button>
       </div>
-      <p v-if="totalRecords">Page {{ Math.ceil(parseInt(pag)/5) }} of {{ Math.ceil(totalRecords/5) }}</p>
+      <p v-if="total">Page {{ Math.ceil((parseInt(pag) + 5) / 5) }} of {{ Math.ceil(total/5) }}</p>
       <p v-else>Records Not Found :c</p>
     </div>
   </section>

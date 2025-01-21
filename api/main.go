@@ -19,7 +19,7 @@ func main() {
 
 	r := chi.NewRouter()
 
-	shared.SetupRouter(r, os.Getenv("EMAIL"), os.Getenv("PASSWORD"), os.Getenv("ORG"), "default")
+	shared.SetupRouter(r, os.Getenv("EMAIL"), os.Getenv("PASSWORD"), os.Getenv("STREAM"), os.Getenv("SEARCH"))
 
 	http.ListenAndServe(":8080", r)
 

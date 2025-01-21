@@ -10,18 +10,18 @@ import (
 )
 
 type Repository interface {
-	GetEmail(from int, search string) ([]interface{}, error)
+	GetTotal(from int, search string) ([]interface{}, error)
 }
 
-type repositoryEmail struct {
+type repositoryTotal struct {
 	username string
 	password string
 	stream   string
 	url      string
 }
 
-func NewRepositoryEmail(username, password, stream, url string) Repository {
-	return &repositoryEmail{
+func NewRepositoryTotal(username, password, stream, url string) Repository {
+	return &repositoryTotal{
 		username: username,
 		password: password,
 		stream:   stream,
@@ -29,8 +29,8 @@ func NewRepositoryEmail(username, password, stream, url string) Repository {
 	}
 }
 
-func (r *repositoryEmail) GetEmail(from int, search string) ([]interface{}, error) {
-	sqlQuery := fmt.Sprintf("SELECT * FROM %s", r.stream)
+func (r *repositoryTotal) GetTotal(from int, search string) ([]interface{}, error) {
+	sqlQuery := fmt.Sprintf("SELECT COUNT(*) FROM %s", r.stream)
 	if search != "" {
 		sqlQuery += fmt.Sprintf(" WHERE body LIKE '%%%s%%' OR subject LIKE '%%%s%%' OR from LIKE '%%%s%%'", search, search, search)
 	}
