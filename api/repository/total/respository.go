@@ -32,7 +32,10 @@ func NewRepositoryTotal(username, password, stream, url string) Repository {
 func (r *repositoryTotal) GetTotal(from int, search string) ([]interface{}, error) {
 	sqlQuery := fmt.Sprintf("SELECT COUNT(*) FROM %s", r.stream)
 	if search != "" {
-		sqlQuery += fmt.Sprintf(" WHERE body LIKE '%%%s%%' OR subject LIKE '%%%s%%' OR from LIKE '%%%s%%'", search, search, search)
+		sqlQuery += fmt.Sprintf(
+			" WHERE body LIKE '%%%s%%' OR subject LIKE '%%%s%%' OR from LIKE '%%%s%%' OR date LIKE '%%%s%%' OR message_id LIKE '%%%s%%' OR to LIKE '%%%s%%' OR _timestamp::text LIKE '%%%s%%'",
+			search, search, search, search, search, search, search,
+		)
 	}
 
 	query := map[string]interface{}{
