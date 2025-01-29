@@ -12,16 +12,27 @@ import (
 )
 
 func main() {
+	// Cargar variables de entorno
 	err := godotenv.Load()
 	if err != nil {
 		log.Fatal("Error loading .env file")
 	}
 
+	// Crear router
 	r := chi.NewRouter()
 
-	shared.SetupRouter(r, os.Getenv("EMAIL"), os.Getenv("PASSWORD"), os.Getenv("STREAM"), os.Getenv("SEARCH"))
+	// Declarar variables de entorno
+	email := os.Getenv("EMAIL")
+	password := os.Getenv("PASSWORD")
+	stream := os.Getenv("STREAM")
+	search := os.Getenv("SEARCH")
 
-	http.ListenAndServe(":8080", r)
+	// Configurar rutas
+	shared.SetupRouter(r, email, password, stream, search)
 
-	log.Println("Procesamiento completado.")
+	// Levantar servidor
+	log.Println("Server started on port 8080")
+	if err := http.ListenAndServe(":8080", r); err != nil {
+		log.Fatal("Error when starting the server:", err)
+	}
 }

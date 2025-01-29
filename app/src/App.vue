@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
-import Linkedin from './components/Linkedin.vue';
+import LinkedinButton from './components/LinkedinButton.vue';
 </script>
 
 <template>
@@ -15,7 +15,7 @@ import Linkedin from './components/Linkedin.vue';
   <RouterView />
   <footer class="h-[6vh] flex justify-center items-center bg-tertiary">
     <h3 class="mr-2">Code developed by </h3>
-    <Linkedin/>
+    <LinkedinButton/>
   </footer>
 </template>
 

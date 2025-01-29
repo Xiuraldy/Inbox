@@ -1,32 +1,44 @@
 package shared
 
 import (
-	handler "challenge/handler/email"
+	handlerEmail "challenge/handler/email"
 	handlerIndexing "challenge/handler/indexing"
 	handlerTotal "challenge/handler/total"
-	repository "challenge/repository/email"
+	repositoryEmail "challenge/repository/email"
 	repositoryTotal "challenge/repository/total"
-	usecase "challenge/usecase/email"
+	usecaseEmail "challenge/usecase/email"
 	usecaseIndexing "challenge/usecase/indexing"
 	usecaseTotal "challenge/usecase/total"
 
 	"github.com/go-chi/chi"
 )
 
+// Configura el router y las dependencias
 func SetupRouter(r *chi.Mux, username, password, stream, url string) {
-	repositoryEmail := repository.NewRepositoryEmail(username, password, stream, url)
-	usecaseEmail := usecase.NewUseCaseEmail(repositoryEmail)
-	handlerEmail := handler.NewEmail(usecaseEmail)
-
-	repositoryTotal := repositoryTotal.NewRepositoryTotal(username, password, stream, url)
-	usecaseTotal := usecaseTotal.NewUseCaseTotal(repositoryTotal)
-	handlerTotal := handlerTotal.NewTotal(usecaseTotal)
-
-	usecaseIndexing := usecaseIndexing.NewUseCaseIndexing()
-	handlerIndexing := handlerIndexing.NewIndexing(usecaseIndexing)
+	emailHandler := initEmailModule(username, password, stream, url)
+	totalHandler := initTotalModule(username, password, stream, url)
+	indexingHandler := initIndexingModule()
 
 	r.Use(Cors())
-	r.Get("/email", handlerEmail.GetEmail)
-	r.Get("/total", handlerTotal.GetTotal)
-	r.Get("/indexing", handlerIndexing.Indexing)
+	r.Get("/email", emailHandler.GetEmail)
+	r.Get("/total", totalHandler.GetTotal)
+	r.Get("/indexing", indexingHandler.Indexing)
+}
+
+// Modularización de inicialización de dependencias
+func initEmailModule(username, password, stream, url string) *handlerEmail.EmailHandler {
+	repo := repositoryEmail.NewRepositoryEmail(username, password, stream, url)
+	usecase := usecaseEmail.NewUseCaseEmail(repo)
+	return handlerEmail.NewEmail(usecase)
+}
+
+func initTotalModule(username, password, stream, url string) *handlerTotal.TotalHandler {
+	repo := repositoryTotal.NewRepositoryTotal(username, password, stream, url)
+	usecase := usecaseTotal.NewUseCaseTotal(repo)
+	return handlerTotal.NewTotal(usecase)
+}
+
+func initIndexingModule() *handlerIndexing.IndexingHandler {
+	usecase := usecaseIndexing.NewUseCaseIndexing()
+	return handlerIndexing.NewIndexing(usecase)
 }

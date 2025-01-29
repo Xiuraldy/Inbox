@@ -1,11 +1,3 @@
-export interface User {
-  ID: number
-  username: string
-  firstname: string
-  lastname: string
-  email: string
-}
-
 export interface Inbox {
   date: string
   body: string
