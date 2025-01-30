@@ -6,9 +6,9 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-const app = createApp(App)
+const app = createApp(App) // Crea la aplicación Vue usando App.vue
 
 app.use(createPinia())
-app.use(router)
+app.use(router) // Para navegación entre páginas
 
-app.mount('#app')
+app.mount('#app') // Monta la aplicación en el elemento con ID #app en index.html

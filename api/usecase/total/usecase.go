@@ -36,10 +36,5 @@ func (u *useCaseTotal) GetTotal(from int, search string) ([]interface{}, error) 
 		return nil, fmt.Errorf("failed to get emails from repository: %w", err)
 	}
 
-	// Retornar mensaje si no se encontraron resultados
-	if len(hits) == 0 {
-		return nil, errors.New("no total emails found for the given query")
-	}
-
 	return hits, nil
 }

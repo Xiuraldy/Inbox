@@ -1,13 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import EmailView from '../views/EmailView.vue'
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(import.meta.env.BASE_URL), // Permite rutas limpias sin hash mode
   routes: [
     {
       path: '/email',
       name: 'email',
-      component: () => EmailView
+      component: () => import('../views/EmailView.vue')
+    },
+    {
+      path: '/',
+      redirect: '/email'
     }
   ]
 })
