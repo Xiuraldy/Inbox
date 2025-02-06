@@ -13,6 +13,7 @@
      <!-- Botón de búsqueda -->
     <button 
       class="relative bg-primary text-white text-xs w-100px px-8 h-8 rounded transition-all duration-300 flex justify-center items-center hover:bg-secondary md:text-sm md:w-150px"
+      :disabled="loading"
       @click="$emit('searchTriggered')"
     >
       <Spinner :loading="loading" />
