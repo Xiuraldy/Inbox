@@ -43,10 +43,8 @@ func (r *repositoryEmail) GetEmail(from int, search string) ([]interface{}, erro
 	// Si se proporciona un término de búsqueda las añade a la consulta
 	if search != "" {
 		sqlQuery += fmt.Sprintf(
-			" WHERE body ILIKE '%s%%' OR subject ILIKE '%s%%' OR from ILIKE '%s%%' "+
-				"OR date ILIKE '%s%%' OR message_id ILIKE '%s%%' OR to ILIKE '%s%%' "+
-				"OR _timestamp::text ILIKE '%s%%'",
-			search, search, search, search, search, search, search,
+			" WHERE match_all('%s')",
+			search,
 		)
 	}
 
